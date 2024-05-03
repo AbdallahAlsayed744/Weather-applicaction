@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="color1">#805BCA</color>
+    <color name="color2">#100030</color>
+    <color name="color3">#850A9A</color>
+    <color name="forecast_color">#DDB130</color>
+
 </resources>
