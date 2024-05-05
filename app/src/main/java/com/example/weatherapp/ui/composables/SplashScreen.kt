@@ -42,7 +42,7 @@ fun SplashScreen(navController: NavHostController) {
         )
         if (logoAnimationState.isAtEnd && logoAnimationState.isPlaying) {
 
-//            val viewmodel:datastoreviewmodel = hiltViewModel()
+
 
             val start=vmodel.startdistination
             navController.navigate(start)
