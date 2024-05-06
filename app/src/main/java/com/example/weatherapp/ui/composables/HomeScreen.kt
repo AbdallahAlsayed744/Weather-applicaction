@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -41,9 +43,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,29 +63,36 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    colorResource(
-                        id = R.color.color1
-                    ), colorResource(id = R.color.color2), colorResource(id = R.color.color3)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        colorResource(
+                            id = R.color.color1
+                        ), colorResource(id = R.color.color2), colorResource(id = R.color.color3)
+                    )
                 )
-            )
-        )
+            ),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     )
-        {
-
+    {
         LocationScreen()
 
+        Image(
+            painter = painterResource(id = R.drawable.weather),
+            contentDescription = "image",
+            modifier = Modifier
+                .padding(top = 7.dp)
+                .width(200.dp)
+                .height(180.dp),
+            contentScale = ContentScale.Crop
+        )
 
 
-
-
-
-        }
-
+    }
 
 
 }
@@ -112,14 +123,14 @@ fun LocationScreen() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = location, color = Color.White)
+
     }
 }
+
 private fun hasLocationPermission(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(
         context,
