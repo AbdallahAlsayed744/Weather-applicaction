@@ -12,6 +12,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -72,6 +73,7 @@ import coil.request.ImageRequest
 import com.example.domain.entity.Astro
 import com.example.domain.entity.Current
 import com.example.domain.entity.Day
+import com.example.domain.entity.Hour
 import com.example.domain.entity.Location
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
@@ -327,6 +329,25 @@ fun HomeScreenbody(location: Location,current:Current,days:Day,astro: Astro) {
     }
     Spacer(modifier = Modifier.height(20.dp))
     Card(current,days,astro)
+    var icon by remember { mutableStateOf(false) }
+    Text(text = "Today Forecast", fontFamily = poppins_bold, color = Color.White, fontSize = 16.sp, modifier = Modifier.padding(top = 10.dp))
+    Image(painter = painterResource(id = if (icon) R.drawable.baseline_arrow_circle_down_24 else R.drawable.baseline_arrow_circle_up_24), contentDescription ="", modifier = Modifier
+        .padding(top = 15.dp)
+        .width(30.dp)
+        .height(30.dp)
+        .clickable {
+            icon = !icon
+
+        }
+
+    )
+    if (icon) {
+        BottomSheetDialoge() {
+            icon = false
+        }
+    }
+
+
 
 
 
