@@ -2,7 +2,7 @@ package com.example.domain.entity
 
 data class Day(
     val avghumidity: Int,
-    val avgtemp_c: Int,
+    val avgtemp_c: Double,
     val avgtemp_f: Double,
     val avgvis_km: Int,
     val avgvis_miles: Int,
@@ -16,7 +16,7 @@ data class Day(
     val maxwind_kph: Double,
     val maxwind_mph: Double,
     val mintemp_c: Double,
-    val mintemp_f: Int,
+    val mintemp_f: Double,
     val totalprecip_in: Int,
     val totalprecip_mm: Int,
     val totalsnow_cm: Int,
