@@ -33,7 +33,12 @@ fun SetupNavGraph(navController: NavHostController) {
             }
 
         composable(route= Scree.Home.route){
-            HomeScreen()
+            HomeScreen(
+               navController
+            )
+        }
+        composable(route = Scree.Searchscreen.route){
+            SearchScreen()
         }
     }
     }
