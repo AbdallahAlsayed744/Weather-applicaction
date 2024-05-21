@@ -6,4 +6,6 @@ sealed class Scree(val route: String) {
     object welcome_screen : Scree("welcome_screen")
     object Home : Scree("home_screen")
 
+    object Searchscreen : Scree("search_screen")
+
 }
