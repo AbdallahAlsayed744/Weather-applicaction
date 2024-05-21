@@ -16,13 +16,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,13 +40,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.IconCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
@@ -58,8 +66,9 @@ import com.example.weatherapp.ui.theme.poppins_bold
 import com.example.weatherapp.ui.theme.poppins_regular
 import com.example.weatherapp.viewmodel.CurrentWeatherCiewmodel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(model: CurrentWeatherCiewmodel = hiltViewModel()) {
+fun SearchScreen(navController:NavController,model: CurrentWeatherCiewmodel = hiltViewModel()) {
     val locactionstate by model.currentweatherlocation.collectAsState()
     val currentstate by model.currentweathercurrent.collectAsState()
     val forcaststate by model.Forcastweathercurrent.collectAsState()
@@ -81,6 +90,11 @@ fun SearchScreen(model: CurrentWeatherCiewmodel = hiltViewModel()) {
                 )
             )
     ) {
+      IconButton(onClick = { navController.navigateUp() }, modifier = Modifier.padding(end = 330.dp).fillMaxWidth()) {
+          Icon(Icons.Outlined.ArrowBack, contentDescription ="", tint = Color.White )
+
+      }
+
         Image(painter = painterResource(id = R.drawable.moon), contentDescription ="", modifier = Modifier
             .padding(top = 20.dp)
             .width(240.dp)
@@ -162,19 +176,7 @@ fun SearchBody(modifier: Modifier,location: Location, current: Current,day: Day)
 
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(
-                            colorResource(id = R.color.color1),
-                            colorResource(id = R.color.color2),
-                            colorResource(id = R.color.color3)
-                        )
-                    )
-                )
-        ) {
+
             val composition by rememberLottieComposition(
                 if (day.daily_will_it_rain == 1) {
                     LottieCompositionSpec.RawRes(R.raw.rain)
@@ -193,7 +195,7 @@ fun SearchBody(modifier: Modifier,location: Location, current: Current,day: Day)
                 modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.FillHeight
             )
-        }
+
 
     }
 }

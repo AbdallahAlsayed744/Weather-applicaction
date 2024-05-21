@@ -4,6 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +25,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,6 +59,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.data.utilis.Scree
 import com.example.domain.entity.Astro
 import com.example.domain.entity.Current
@@ -71,6 +82,12 @@ fun HomeScreen(navController: NavController,vmodel: CurrentWeatherCiewmodel= hil
     val curentstate by vmodel.currentweathercurrent.collectAsState()
     val forcaststate by vmodel.Forcastweathercurrent.collectAsState()
     val loading by vmodel.loading.collectAsState()
+
+    var isNetworkAvailable by remember { mutableStateOf(true) }
+
+    var retryAttempted by remember { mutableStateOf(false) }
+
+    isNetworkAvailable = isNetworkAvailable(context = LocalContext.current)
 
 
     Column(
@@ -136,16 +153,23 @@ fun HomeScreen(navController: NavController,vmodel: CurrentWeatherCiewmodel= hil
 
 
 
+        if (isNetworkAvailable){
 
+            locationstate?.let { curentstate?.let { it1 -> forcaststate?.let { it2 -> HomeScreenbody(location = it, current = it1, days = it2.day, astro = it2.astro) } } }
 
+        }
+        else{
+            RetrySection(error = "No Internet Avilable") {
+                retryAttempted = true
 
+            }
+        }
 
-
-
-        locationstate?.let { curentstate?.let { it1 -> forcaststate?.let { it2 -> HomeScreenbody(location = it, current = it1, days = it2.day, astro = it2.astro) } } }
-
-
-
+    }
+    if (retryAttempted) {
+        LaunchedEffect(retryAttempted) {
+            retryAttempted = false
+        }
 
     }
 
@@ -439,6 +463,57 @@ private fun getCurrentLocation(context: Context, callback: (Double, Double) -> U
             // Handle location retrieval failure
             exception.printStackTrace()
         }
+}
+
+@Composable
+fun isNetworkAvailable(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val network = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+        return networkCapabilities != null &&
+                (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+    } else {
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
+    }
+}
+
+
+@Composable
+fun RetrySection(
+    error: String,
+    onRetry: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize(),verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        val composition by rememberLottieComposition(
+                LottieCompositionSpec.RawRes(R.raw.wifi)
+        )
+        val animationState = animateLottieCompositionAsState(
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
+
+        LottieAnimation(
+            composition = composition,
+            progress = { animationState.progress },
+            modifier = Modifier.padding(bottom = 90.dp).height(160.dp)
+
+        )
+        Button(
+            onClick = { onRetry() },
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue,
+                contentColor = colorResource(id = R.color.white)
+            )
+        ) {
+            Text(text = "Retry")
+        }
+    }
 }
 
 
